@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial, sans-serif;
+    }
+
+    body{
+        background:black;
+        overflow:hidden;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        color:white;
+    }
+
+    /* LOGIN */
+
+    .login-box{
+        position:absolute;
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+        background:rgba(255,255,255,0.05);
+        padding:40px;
+        border-radius:20px;
+        backdrop-filter:blur(10px);
+        box-shadow:0 0 30px rgba(255,0,100,0.3);
+        z-index:10;
+    }
+
+    .login-box h2{
+        text-align:center;
+        color:#ff4d88;
+    }
+
+    .login-box input{
+        width:250px;
+        padding:12px;
+        border:none;
+        outline:none;
+        border-radius:10px;
+        background:#111;
+        color:white;
+    }
+
+    .login-box button{
+        padding:12px;
+        border:none;
+        border-radius:10px;
+        background:#ff4d88;
+        color:white;
+        cursor:pointer;
+        font-size:16px;
+        transition:0.3s;
+    }
+
+    .login-box button:hover{
+        transform:scale(1.05);
+        background:#ff1f6b;
+    }
+
+    .error{
+        color:red;
+        text-align:center;
+        display:none;
+    }
+
+    /* HEART */
+
+    #heart-container{
+        position:relative;
+        width:100%;
+        height:100%;
+        display:none;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .word{
+        position:absolute;
+        color:#ff4d88;
+        font-size:18px;
+        opacity:0;
+        animation:appear 2s forwards;
+        text-shadow:0 0 10px #ff4d88;
+    }
+
+    @keyframes appear{
+        from{
+            transform:scale(0);
+            opacity:0;
+        }
+        to{
+            transform:scale(1);
+            opacity:1;
+        }
+    }
+
+    .center-text{
+    position:absolute;
+    color:#ff0000;
+    font-size:55px;
+    font-weight:bold;
+    animation:pulse 2s infinite;
+    text-shadow:0 0 25px red;
+    z-index:5;
+}
+
+    @keyframes pulse{
+        0%{ transform:scale(1);}
+        50%{ transform:scale(1.1);}
+        100%{ transform:scale(1);}
+    }
+
+</style>
+</head>
+<body>
+
+<div class="login-box" id="loginBox">
+    <h2>Login</h2>
+
+    <input type="text" id="login" placeholder="Login">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="checkLogin()">Enter</button>
+
+    <div class="error" id="error">
+        Wrong login or password
+    </div>
+</div>
+
+<div id="heart-container">
+    <div class="center-text">LOVE YOU ❤️</div>
+</div>
+
+<script>
+
+    // ЛОГИН И ПАРОЛЬ
+    const correctLogin = "ЛюбимыйОлег";
+    const correctPassword = "3108";
+
+    function checkLogin(){
+
+        const login = document.getElementById("login").value;
+        const password = document.getElementById("password").value;
+
+        if(login === correctLogin && password === correctPassword){
+
+            document.getElementById("loginBox").style.display = "none";
+
+            const container = document.getElementById("heart-container");
+            container.style.display = "flex";
+
+            createHeart();
+
+        }else{
+            document.getElementById("error").style.display = "block";
+        }
+    }
+
+ function createHeart(){
+
+    const container = document.getElementById("heart-container");
+
+    const scale = 32;
+
+    container.querySelectorAll(".word").forEach(e => e.remove());
+
+    // 1) СНАЧАЛА КОНТУР СЕРДЦА
+    for(let t = 0; t < 360; t += 2.5){ // плотный контур
+
+        let x = 16 * Math.pow(Math.sin(t * Math.PI / 180), 3);
+
+        let y =
+            13 * Math.cos(t * Math.PI / 180)
+            - 5 * Math.cos(2 * t * Math.PI / 180)
+            - 2 * Math.cos(3 * t * Math.PI / 180)
+            - Math.cos(4 * t * Math.PI / 180);
+
+        const word = document.createElement("div");
+        word.className = "word";
+        word.innerText = "LOVE YOU";
+
+        word.style.left = (window.innerWidth / 2 + x * scale) + "px";
+        word.style.top  = (window.innerHeight / 2 - y * scale) + "px";
+
+        word.style.fontSize = "10px";
+        word.style.color = "#ff1a1a";
+        word.style.textShadow = "0 0 10px red";
+
+        word.style.opacity = "0";
+        word.style.animation = "appear 1s forwards";
+        word.style.animationDelay = (t / 400) + "s";
+
+        container.appendChild(word);
+    }
+
+    // 2) ПОТОМ ЗАПОЛНЕНИЕ ВНУТРИ (ЧЕРЕЗ ТУ ЖЕ ФОРМУ СЕРДЦА)
+    setTimeout(() => {
+
+        for(let y = 1.3; y > -1.3; y -= 0.045){
+    for(let x = -1.3; x < 1.3; x += 0.045){
+
+                let xx = x;
+                let yy = y;
+
+                let eq =
+                    Math.pow(xx*xx + yy*yy - 1, 3) -
+                    xx*xx * yy*yy*yy;
+
+                if(eq <= 0){
+
+                    const word = document.createElement("div");
+                    word.className = "word";
+                    word.innerText = "LOVE YOU Олежек";
+
+                    word.style.left = (window.innerWidth / 2 + x * scale * 10) + "px";
+                    word.style.top  = (window.innerHeight / 2 - y * scale * 10 + 80) + "px";
+
+                    word.style.fontSize = "9px";
+                    word.style.color = "rgba(255,192,203)";
+                    word.style.textShadow = "0 0 6px red";
+
+                    word.style.opacity = "0";
+                    word.style.animation = "appear 1.2s forwards";
+                    word.style.animationDelay = (Math.random() * 1.5) + "s";
+
+                    container.appendChild(word);
+                }
+            }
+        }
+
+        // центр поверх
+        const center = document.createElement("div");
+        center.className = "center-text";
+        center.innerText = "LOVE YOU❤️";
+        container.appendChild(center);
+
+    }, 1500); // задержка = время появления контура
+}
+
+</script>
+
+</body>
+</html>
